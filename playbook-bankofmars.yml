@@ -1,0 +1,50 @@
+---
+- name: Learning methods for looping against JSON data avail via a URL
+  hosts: localhost
+  connection: local
+  gather_facts: no  # setup.py
+
+  # loop info is avail @
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#comparing-loop-and-with
+
+  # wget https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY -O ~/nasadata.json
+  # vars_files:
+  #     ~/nasadata.json
+  vars:
+         examplevar: "string value"
+         instrvar: "zach value"
+         # list of lookup plugins
+         # ansible-doc -t lookup -l
+         nasadata: "{{ lookup('url', 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY') }}"
+
+  tasks:
+          - name: loop across out data using the 'loop' statement
+            debug:
+                    var: item       # var does NOT expect "{{ yourvar }}" syntax
+            #loop: "{{ nasadata.photos }}" # this is our loop item (this is our LIST)
+            #loop: "{{ nasadata['photos'] }}" # this is another way to access the data for out loop item
+            loop: "{{ nasadata.get('photos') }}" # this is a PYTHON method .get() and THE way to look up data from a dictionary
+
+          # supress output
+          - name: loop across out data using the 'loop' statement
+            debug:
+                    var: item       # var does NOT expect "{{ yourvar }}" syntax
+            #loop: "{{ nasadata.photos }}" # this is our loop item (this is our LIST)
+            #loop: "{{ nasadata['photos'] }}" # this is another way to access the data for out loop item
+            loop: "{{ nasadata.get('photos') }}" # this is a PYTHON method .get() and THE way to look up data from a dictionary
+            no_log: true  # do this ANYTIME you think you might blast secrets or sensitive info to the screen!
+
+          # supress output
+          - name: augment loop with loop control
+            debug:
+                    var: item       # var does NOT expect "{{ yourvar }}" syntax
+            #loop: "{{ nasadata.photos }}" # this is our loop item (this is our LIST)
+            #loop: "{{ nasadata['photos'] }}" # this is another way to access the data for out loop item
+            loop: "{{ nasadata.get('photos') }}" # this is a PYTHON method .get() and THE way to look up data from a dictionary
+            loop_control:
+                    label: "{{ item.id }}" # attempt to ONLY show the ID when looping
+
+          - name: use the old with_* method for looping
+            debug:
+                    var: item
+            with_items: "{{ nasadata.photos }}"

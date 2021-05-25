@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Intro to looping",
+        "hosts": "localhost",
+        "gather_facts": "no",
+        "vars": {
+            "ethList": [
+                "eth0",
+                "eth1",
+                "eth2",
+                "eth3"
+            ]
+        },
+        "tasks": [
+            {
+                "name": "Demo a tiny loop",
+                "debug": {
+                    "msg": "The debug module allows us to display to the screen: {{ item }}"
+                },
+                "loop": "{{ ethList }}"
+            },
+            {
+                "name": "Demo a second tiny loop",
+                "debug": {
+                    "msg": "All modules can also have LOCAL var information: {{ item }}"
+                },
+                "loop": "{{ myOtherList }}",
+                "vars": {
+                    "myOtherList": [
+                        "192.168.70.1",
+                        "10.10.1.1"
+                    ]
+                }
+            }
+        ]
+    }
+]
