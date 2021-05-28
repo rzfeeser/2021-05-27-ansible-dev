@@ -1,0 +1,56 @@
+# Ansible Best Practice
+
+The objective of this lab is to outline some basics regarding Ansible and best practice. It is expected that the enterprise will define rules beyond *just* these, however, the following are generally applicable on every Ansible project.
+
+### Limit Variable Definitions
+**Agree on a limited number of places to define variable precedence.** Allowing users to define the same variable 21 different times is compelling, but doesn't scale well. Consider limiting where users might define variables. For example, banning the use of `vars_prompt` (which stops an automated playbook and waits for the answer to a question), might be a good start.
+- [https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence)
+
+### Keep Building Roles
+**Creating libraries of roles allows your Ansible devs to easily reuse code.** Roles should be named to promote clarity. Something like `prechecks-campusWest-cisco-ios` is certainly better than `prechecks`. Developing roles should include a peer review process before they are added to a collection, or otherwise made available for use.  
+
+- [https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html)
+- [https://galaxy.ansible.com/docs/contributing/creating_role.html](https://galaxy.ansible.com/docs/contributing/creating_role.html)
+
+### Use Collections
+**Use collections to augment Ansible.** Collections are simply highly organized folders. They can easily be added to an existing Ansible deployment, or added to a deployment at the time of creation. Collections may include roles, playbooks, modules, documentation, scripts, and just about anything else that might be useful in running Ansible.
+
+- [https://docs.ansible.com/ansible/latest/user_guide/collections_using.html](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)
+- [https://www.ansible.com/blog/hands-on-with-ansible-collections](https://www.ansible.com/blog/hands-on-with-ansible-collections)
+- [https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html)
+
+### Spacing
+**Generous use of spacing makes playbooks easy to scan.** Agree on "how many spaces" your project or enterprise will use (2, 3, or 4?). Consistency across all YAML documents increases overall Ansible grok.
+
+- [https://yaml.org/spec/1.2/spec.html](https://yaml.org/spec/1.2/spec.html)
+
+### Always Mention 'state:'
+**Define the** `state:` **parameter, even if it is is optional.** Different modules have different default settings for `state:`, and some modules support several `state:` settings. Explicitly setting `sate: present` or `state: absent` makes playbooks and roles clearer.
+
+- [https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#desired-state-and-idempotency](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#desired-state-and-idempotency)
+- [https://docs.ansible.com/ansible/latest/user_guide/modules_intro.html](https://docs.ansible.com/ansible/latest/user_guide/modules_intro.html)
+
+### Use 'name:' and description comments
+**Always 'name:' your plays, blocks, and tasks, and use descriptive comments.** Names and comments should be descriptive. For example, `# copy module` is a poorly written comment, whereas, `# replacing phoenix-app cfg file` is well formed. Your goal is to provide additional detail (and therefore understanding) to your code, not duplicate information that is already apparent.
+
+- [https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html)
+
+### Remain Idempotent
+**Generally, playbooks should remain idempotent (not indicate changes if run twice in a row).** An operation is idempotent if the result of performing it once is exactly the same as the result of performing it repeatedly without any intervening actions. Failure to adhere to this rule may result in excessive handler calls (loss of services via restarts), a lack of confidence in the ansible results (addressing configuration drift), and a decrease in the overall predictable nature of Ansible. As some modules are notoriously difficult to keep idempotent, it is *OK* to "outlaw" the use of certain modules.
+
+- [https://docs.ansible.com/ansible/latest/user_guide/plugin_filtering_config.html](https://docs.ansible.com/ansible/latest/user_guide/plugin_filtering_config.html)
+- [https://hvops.com/articles/ansible-vs-shell-scripts/](https://hvops.com/articles/ansible-vs-shell-scripts/)
+- [https://medium.com/@relativkreativ/how-to-use-ansibles-lineinfile-module-in-a-bulletproof-way-e2c75e0aa6bb](https://medium.com/@relativkreativ/how-to-use-ansibles-lineinfile-module-in-a-bulletproof-way-e2c75e0aa6bb)
+
+### Write Readable Playbooks
+**Whenever you can, do things simply.** Use advanced features only when necessary, and select the feature that best matches your use case. For example, you will probably not need vars, vars_files, vars_prompt and --extra-vars all at once, while also using an external inventory file. If something feels complicated, it probably is. Take the time to look for a simpler solution.
+
+- [https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html) 
+
+### Use an SCM
+**Ansible code needs to be managed via a Software Control Management platform such as GitHub, GitLab, or BitBucket.** Ansible developers should be required to use techniques like branches, and pull requests. All pull requests should be peer reviewed before being approved. Adhering to rules like the ones we are outlining make for efficient code reviews and reinforce best practice coding standards.
+
+- [https://bitbucket.org/blog/new-cloud-code-review-experience](https://bitbucket.org/blog/new-cloud-code-review-experience)
+
+### Ansible Devs Study Python
+**You will write better Ansible code if you know Python.** Python is the language that drives Ansible. The better your Ansible devs know Python, the more clever tricks and customizations they'll be able to create.
