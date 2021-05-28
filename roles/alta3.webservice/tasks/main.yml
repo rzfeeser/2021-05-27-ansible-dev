@@ -1,0 +1,9 @@
+---
+# tasks file for /home/student/ans/roles/alta3.webservice
+- name: setup a webserver on an ubuntu host
+  import_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+
+- name: setup a webserver on a centos host
+  import_tasks: centos.yml
+  when: ansible_distribution == "centos"

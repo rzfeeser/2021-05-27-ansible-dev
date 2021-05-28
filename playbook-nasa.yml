@@ -1,0 +1,15 @@
+---
+- name: grab mars data
+  connection: local
+  hosts: localhost
+
+  tasks:
+          - name: display all martian data avail from api
+            uri:
+                    method: GET
+                    url: https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=DEMO_KEY
+            register: results
+
+          - name: display the results
+            debug:
+                    var: results.keys() # use a python method just to return the keys
